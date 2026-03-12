@@ -1,7 +1,55 @@
+@font-face {
+  font-family: 'GMarketSans';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff');
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GMarketSans';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GMarketSans';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'KkuBulLim';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/BMkkubulimTTF-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OngleipKonkon';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2412-1@1.0/Ownglyph_corncorn-Rg.woff2') format('woff2');
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IsYun';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff') format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
 }
 
 .section-container {
@@ -14,4 +62,55 @@
 #canvas {
   width: 70%;
   height: 50%;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.font-container button {
+  width: 100px;
+  height: 30px;
+}
+
+.font-container button[data-font="GmarketSans"] { 
+  font-family: 'GMarketSans'; 
+  font-weight: 500; 
+}
+.font-container button[data-font="KkuBulLim"] { 
+  font-family: 'KkuBulLim'; 
+}
+.font-container button[data-font="OngleipKonkon"] { 
+  font-family: 'OngleipKonkon'; 
+}
+.font-container button[data-font="IsYun"] { 
+  font-family: 'IsYun'; 
+}
+
+.font-container button.active {
+  background-color: black;
+  color: white;
+}
+.font-container button.active {
+  background-color: black;
+  color: white;
+}
+
+.color-container button {
+  width: 80px;
+  height: 30px;
+}
+
+.color-container button[data-color="border-button"] {
+  border: 2px solid #000;
+}
+
+.color-container button.active {
+  background-color: black;
+  color: white;
+}
+.color-container button.active {
+  background-color: black;
+  color: white;
 }
