@@ -2,12 +2,17 @@ const fileInput = document.getElementById('fileInput');
 const canvas = document.getElementById('canvas');
 const textInput = document.getElementById('textInput');
 const overlayRange = document.getElementById('overlayRange');
+const overlayValue = document.getElementById('overlayValue');
+const borderToggle = document.getElementById('borderToggle');
+const downloadBtn = document.getElementById('downloadBtn');
+const fontBtns = document.querySelectorAll('.font-container button');
+const colorBtns = document.querySelectorAll('.color-container button');
 
 let currentImg = null;
 let currentFont = 'KkuBulLim';
 let currentColor = 'black';
 let currentBorder = false;
-let currentOverlay = 0;  // 이름 통일
+let currentOverlay = 0;
 
 fileInput.addEventListener('change', (e) => {
   const file = e.target.files[0];
@@ -26,13 +31,50 @@ fileInput.addEventListener('change', (e) => {
 textInput.addEventListener('input', draw);
 
 overlayRange.addEventListener('input', () => {
-  currentOverlay = overlayRange.value  // 이름 통일
+  currentOverlay = overlayRange.value
+  overlayValue.textContent = overlayRange.value
   draw()
+})
+
+fontBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    fontBtns.forEach(b => b.classList.remove('active'))
+    btn.classList.add('active')
+    currentFont = btn.dataset.font
+    draw()
+  })
+})
+
+colorBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    colorBtns.forEach(b => b.classList.remove('active'))
+    btn.classList.add('active')
+    currentColor = btn.dataset.color
+    draw()
+  })
+})
+
+borderToggle.addEventListener('click', (e) => {
+  currentBorder = !currentBorder
+  e.target.textContent = currentBorder ? '테두리 ON' : '테두리 OFF'
+  e.target.classList.toggle('active', currentBorder)
+  draw()
+})
+
+downloadBtn.addEventListener('click', () => {
+  if (!currentImg) {
+    alert('이미지를 먼저 업로드해주세요!')
+    return
+  }
+  const link = document.createElement('a')
+  link.download = 'thumbnail.png'
+  link.href = canvas.toDataURL('image/png')
+  link.click()
 })
 
 function getWrappedLines(ctx, text, maxWidth) {
   const lines = []
-  const paragraphs = text.split('\n')  // 엔터로 단락 나누기
+  const paragraphs = text.split('\n')
 
   paragraphs.forEach(paragraph => {
     if (paragraph === '') {
@@ -101,52 +143,3 @@ function draw() {
     })
   }
 }
-
-document.querySelectorAll('.font-container button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.font-container button').forEach(b => b.classList.remove('active'))
-    btn.classList.add('active')
-    currentFont = btn.dataset.font
-    draw()
-  })
-})
-
-document.querySelectorAll('.color-container button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.color-container button').forEach(b => b.classList.remove('active'))
-    btn.classList.add('active')
-    currentColor = btn.dataset.color
-    draw()
-  })
-})
-
-document.getElementById('borderToggle').addEventListener('click', (e) => {
-  currentBorder = !currentBorder
-  e.target.textContent = currentBorder ? '테두리 ON' : '테두리 OFF'
-  e.target.classList.toggle('active', currentBorder)
-  draw()
-})
-
-overlayRange.addEventListener('input', () => {
-  currentOverlay = overlayRange.value
-  document.getElementById('overlayValue').textContent = overlayRange.value
-  draw()
-})
-
-document.querySelector('button[type="button"]:last-of-type').addEventListener('click', () => {
-  const link = document.createElement('a')
-  link.download = 'thumbnail.png'
-  link.href = canvas.toDataURL('image/png')
-  link.click()
-})
-
-document.getElementById('downloadBtn').addEventListener('click', () => {
-  if (!currentImg) {
-    alert('이미지를 먼저 업로드해주세요!')
-    return
-  }
-  const link = document.createElement('a')
-  link.download = 'thumbnail.png'
-  link.href = canvas.toDataURL('image/png')
-  link.click()
-})
