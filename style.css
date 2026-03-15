@@ -90,7 +90,7 @@ body {
 .section-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -214,17 +214,6 @@ body {
   border-color: var(--color-text);
 }
 
-/* ─── 섹션 레이블 ─── */
-
-.section-label {
-  width: var(--mobile-width);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: -4px;
-}
 
 /* ─── 버튼 공통 ─── */
 
@@ -278,8 +267,15 @@ button:disabled {
 
 /* ─── 폰트 버튼 ─── */
 
+.font-container {
+  flex-wrap: nowrap;
+  width: var(--mobile-width);
+}
+
 .font-container button {
-  width: 100px;
+  flex: 1;
+  min-width: 0;
+  padding: 0 4px;
 }
 
 .font-container button[data-font="GmarketSans"] {
