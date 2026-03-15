@@ -136,14 +136,13 @@ function draw() {
   // 텍스트
   const text = textInput.value;
   if (text) {
-    const fontSize = Math.floor(canvas.width * 0.13)
+    const shortSide = Math.min(canvas.width, canvas.height)
+    const fontSize = Math.floor(shortSide * 0.13)
     const lineHeight = fontSize
 
     ctx.font = `bold ${fontSize}px ${currentFont}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-
-    const shortSide = Math.min(canvas.width, canvas.height)
     const maxWidth = shortSide * 0.8
     const lines = getWrappedLines(ctx, text, maxWidth)
 
