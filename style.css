@@ -46,6 +46,13 @@
   box-sizing: border-box;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px;
+}
+
 .title {
   font-size: 24px;
   font-weight: bold;
@@ -135,6 +142,10 @@
   }
 }
 
+.text-input {
+  padding: 4px;
+}
+
 .button-container {
   display: flex;
   gap: 10px;
@@ -184,4 +195,8 @@
 .color-container button.active {
   background-color: black;
   color: white;
+}
+
+.plain-button {
+  padding: 4px 10px;
 }
