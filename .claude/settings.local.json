@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(winget install:*)",
+      "Bash(py:*)",
+      "Read(//c/Users/h2s0_/AppData/Local/Programs/**)",
+      "Read(//c//**)",
+      "Bash(where python:*)"
+    ]
+  }
+}
