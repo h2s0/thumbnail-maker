@@ -31,6 +31,7 @@ fileInput.addEventListener('change', (e) => {
     imagePlaceholder.style.display = 'none';
     canvasWrapper.classList.add('has-image');
     currentImg = img;
+    downloadBtn.disabled = false;
     draw();
   }
 });
@@ -68,11 +69,9 @@ borderToggle.addEventListener('click', (e) => {
   draw()
 })
 
+downloadBtn.disabled = true
+
 downloadBtn.addEventListener('click', () => {
-  if (!currentImg) {
-    alert('이미지를 먼저 업로드해주세요!')
-    return
-  }
   const link = document.createElement('a')
   link.download = 'thumbnail.png'
   link.href = canvas.toDataURL('image/png')

@@ -222,6 +222,12 @@ button,
   padding: 0 10px;
 }
 
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 /* ─── 슬라이더 ─── */
 
 .overlay-container {
