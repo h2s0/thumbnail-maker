@@ -1,5 +1,7 @@
 const fileInput = document.getElementById('fileInput');
 const canvas = document.getElementById('canvas');
+const canvasWrapper = document.querySelector('.canvas-wrapper');
+const imagePlaceholder = document.getElementById('imagePlaceholder');
 const textInput = document.getElementById('textInput');
 const overlayRange = document.getElementById('overlayRange');
 const overlayValue = document.getElementById('overlayValue');
@@ -14,8 +16,11 @@ let currentColor = 'black';
 let currentBorder = false;
 let currentOverlay = 0;
 
+canvasWrapper.addEventListener('click', () => fileInput.click());
+
 fileInput.addEventListener('change', (e) => {
   const file = e.target.files[0];
+  if (!file) return;
   const img = new Image();
   img.src = URL.createObjectURL(file);
 
@@ -23,6 +28,8 @@ fileInput.addEventListener('change', (e) => {
     canvas.width = img.width;
     canvas.height = img.height;
     canvas.style.display = 'block';
+    imagePlaceholder.style.display = 'none';
+    canvasWrapper.classList.add('has-image');
     currentImg = img;
     draw();
   }

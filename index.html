@@ -12,8 +12,15 @@
   <div>
     <h2 class="title">블로그 썸네일을 만들어보아요</h2>
     <section class="section-container">
-      <canvas id="canvas"></canvas>
-      <input type="file" id="fileInput" name="image">
+      <div class="canvas-wrapper">
+        <canvas id="canvas"></canvas>
+        <div id="imagePlaceholder" class="image-placeholder">
+          <span>+</span>
+        </div>
+        <div class="canvas-hover-overlay">이미지 변경</div>
+        <div class="canvas-change-badge">📷</div>
+      </div>
+      <input type="file" id="fileInput" name="image" style="display:none">
       <textarea type="text" id="textInput" placeholder="텍스트를 입력해주세요."></textarea>
       <div class="button-container font-container">
         <button type="button" data-font="GmarketSans">지마켓Sans</button>
