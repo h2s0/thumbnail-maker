@@ -64,6 +64,13 @@
   height: 50%;
 }
 
+@media (max-width: 600px) {
+  #canvas {
+    width: 90%;
+    height: auto;
+  }
+}
+
 .button-container {
   display: flex;
   gap: 10px;
