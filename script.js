@@ -73,8 +73,8 @@ downloadBtn.disabled = true
 
 downloadBtn.addEventListener('click', () => {
   const link = document.createElement('a')
-  link.download = 'thumbnail.png'
-  link.href = canvas.toDataURL('image/png')
+  link.download = 'thumbnail.jpg'
+  link.href = canvas.toDataURL('image/jpeg', 0.95)
   link.click()
 })
 
