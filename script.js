@@ -94,6 +94,20 @@ function getWrappedLines(ctx, text, maxWidth) {
       } else {
         currentLine = testLine
       }
+
+      if (ctx.measureText(currentLine).width > maxWidth) {
+        let charLine = ''
+        for (const char of currentLine) {
+          const testCharLine = charLine + char
+          if (ctx.measureText(testCharLine).width > maxWidth && charLine) {
+            lines.push(charLine)
+            charLine = char
+          } else {
+            charLine = testCharLine
+          }
+        }
+        currentLine = charLine
+      }
     })
     lines.push(currentLine)
   })
@@ -122,8 +136,8 @@ function draw() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const padding = 40
-    const maxWidth = canvas.width - padding * 2
+    const shortSide = Math.min(canvas.width, canvas.height)
+    const maxWidth = shortSide * 0.8
     const lines = getWrappedLines(ctx, text, maxWidth)
 
     const totalHeight = lines.length * lineHeight
