@@ -46,11 +46,20 @@
   box-sizing: border-box;
 }
 
+/* ─── 레이아웃 (모바일 기본) ─── */
+
 .container {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  padding: 32px;
+  gap: 24px;
+  padding: 16px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    gap: 32px;
+    padding: 32px;
+  }
 }
 
 .title {
@@ -66,10 +75,18 @@
   align-items: center;
 }
 
+/* ─── 캔버스 (모바일 기본: 90%) ─── */
+
 .canvas-wrapper {
   position: relative;
-  width: 40%;
+  width: 90%;
   cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .canvas-wrapper {
+    width: 40%;
+  }
 }
 
 #canvas {
@@ -116,8 +133,8 @@
   background: rgba(0, 0, 0, 0.55);
   color: white;
   font-size: 16px;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: none;
   align-items: center;
@@ -136,52 +153,67 @@
   color: #666;
 }
 
-@media (max-width: 600px) {
-  .canvas-wrapper {
-    width: 90%;
+/* ─── 텍스트 입력 (모바일 기본: 90%) ─── */
+
+.text-input {
+  width: 90%;
+  padding: 4px;
+  font-size: 16px; /* iOS 자동 확대 방지 */
+  touch-action: manipulation;
+}
+
+@media (min-width: 768px) {
+  .text-input {
+    width: auto;
+    font-size: unset;
   }
 }
 
-.text-input {
-  padding: 4px;
-}
+/* ─── 버튼 공통 ─── */
 
 .button-container {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
+
+button {
+  touch-action: manipulation; /* 300ms 딜레이 제거 */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── 폰트 버튼 (터치 타겟 44px) ─── */
 
 .font-container button {
   width: 100px;
-  height: 30px;
+  height: 44px;
 }
 
-.font-container button[data-font="GmarketSans"] { 
-  font-family: 'GMarketSans'; 
-  font-weight: 500; 
+.font-container button[data-font="GmarketSans"] {
+  font-family: 'GMarketSans';
+  font-weight: 500;
 }
-.font-container button[data-font="KkuBulLim"] { 
-  font-family: 'KkuBulLim'; 
+.font-container button[data-font="KkuBulLim"] {
+  font-family: 'KkuBulLim';
 }
-.font-container button[data-font="OngleipKonkon"] { 
-  font-family: 'OngleipKonkon'; 
+.font-container button[data-font="OngleipKonkon"] {
+  font-family: 'OngleipKonkon';
 }
-.font-container button[data-font="IsYun"] { 
-  font-family: 'IsYun'; 
+.font-container button[data-font="IsYun"] {
+  font-family: 'IsYun';
 }
 
 .font-container button.active {
   background-color: black;
   color: white;
 }
-.font-container button.active {
-  background-color: black;
-  color: white;
-}
+
+/* ─── 색상 버튼 (터치 타겟 44px) ─── */
 
 .color-container button {
   width: 80px;
-  height: 30px;
+  height: 44px;
 }
 
 .color-container button[data-color="border-button"] {
@@ -192,11 +224,30 @@
   background-color: black;
   color: white;
 }
-.color-container button.active {
-  background-color: black;
-  color: white;
-}
+
+/* ─── plain 버튼 (터치 타겟 44px) ─── */
 
 .plain-button {
-  padding: 4px 10px;
+  padding: 0 10px;
+  height: 44px;
+}
+
+/* ─── 슬라이더 ─── */
+
+.overlay-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 90%;
+}
+
+@media (min-width: 768px) {
+  .overlay-container {
+    width: auto;
+  }
+}
+
+#overlayRange {
+  flex: 1;
+  height: 44px; /* 터치 타겟 */
 }
