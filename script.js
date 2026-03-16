@@ -136,7 +136,7 @@ function draw() {
   const text = textInput.value;
   if (text) {
     const shortSide = Math.min(canvas.width, canvas.height)
-    const fontSize = Math.floor(shortSide * 0.15)
+    const fontSize = Math.floor(shortSide * 0.145)
     const lineHeight = fontSize
 
     ctx.font = `bold ${fontSize}px ${currentFont}`;
