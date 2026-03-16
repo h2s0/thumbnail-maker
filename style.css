@@ -304,6 +304,42 @@ button:disabled {
   padding: 0 20px;
 }
 
+/* ─── 텍스트 행 (textarea + 폰트크기) ─── */
+
+.text-row {
+  display: flex;
+  gap: 4px;
+  width: var(--mobile-width);
+}
+
+.text-row .text-input {
+  width: 100%;
+}
+
+.font-size-control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.size-btn {
+  width: var(--touch-target);
+  height: 32px;
+  padding: 0;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+#fontSizeDisplay {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  min-width: 24px;
+  text-align: center;
+  user-select: none;
+}
+
 /* ─── 다운로드 버튼 ─── */
 
 #downloadBtn {
@@ -369,6 +405,10 @@ button:disabled {
   .text-input {
     width: 100%;
     font-size: 14px;
+  }
+
+  .text-row {
+    width: 100%;
   }
 
   .overlay-container {

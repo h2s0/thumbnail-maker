@@ -9,12 +9,16 @@ const borderToggle = document.getElementById('borderToggle');
 const downloadBtn = document.getElementById('downloadBtn');
 const fontBtns = document.querySelectorAll('.font-container button');
 const colorBtns = document.querySelectorAll('.color-container button');
+const fontSizeMinus = document.getElementById('fontSizeMinus');
+const fontSizePlus = document.getElementById('fontSizePlus');
+const fontSizeDisplay = document.getElementById('fontSizeDisplay');
 
 let currentImg = null;
 let currentFont = 'KkuBulLim';
 let currentColor = 'black';
 let currentBorder = false;
 let currentOverlay = 0;
+let fontSizeStep = 0; // 1step = 비율 0.01 (≈10px @ 1080p)
 
 canvasWrapper.addEventListener('click', () => fileInput.click());
 
@@ -61,6 +65,28 @@ colorBtns.forEach(btn => {
     draw()
   })
 })
+
+fontSizeMinus.addEventListener('click', () => {
+  if (fontSizeStep > -5) {
+    fontSizeStep--;
+    updateFontSizeDisplay();
+    draw();
+  }
+});
+
+fontSizePlus.addEventListener('click', () => {
+  if (fontSizeStep < 5) {
+    fontSizeStep++;
+    updateFontSizeDisplay();
+    draw();
+  }
+});
+
+function updateFontSizeDisplay() {
+  if (fontSizeStep === 0) fontSizeDisplay.textContent = '0';
+  else if (fontSizeStep > 0) fontSizeDisplay.textContent = `+${fontSizeStep}`;
+  else fontSizeDisplay.textContent = `${fontSizeStep}`;
+}
 
 borderToggle.addEventListener('click', (e) => {
   currentBorder = !currentBorder
@@ -136,7 +162,7 @@ function draw() {
   const text = textInput.value;
   if (text) {
     const shortSide = Math.min(canvas.width, canvas.height)
-    const fontSize = Math.floor(shortSide * 0.13)
+    const fontSize = Math.floor(shortSide * (0.13 + fontSizeStep * 0.01))
     const lineHeight = fontSize
 
     ctx.font = `bold ${fontSize}px ${currentFont}`;

@@ -43,7 +43,14 @@
 
       <div class="divider"></div>
 
-      <textarea id="textInput" placeholder="텍스트를 입력해주세요." class="text-input"></textarea>
+      <div class="text-row">
+        <textarea id="textInput" placeholder="텍스트를 입력해주세요." class="text-input"></textarea>
+        <div class="font-size-control">
+          <button id="fontSizeMinus" type="button" class="size-btn">−</button>
+          <span id="fontSizeDisplay">0</span>
+          <button id="fontSizePlus" type="button" class="size-btn">+</button>
+        </div>
+      </div>
 
       <div class="button-container font-container">
         <button type="button" data-font="GmarketSans">지마켓Sans</button>
