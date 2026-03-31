@@ -7,6 +7,8 @@ const overlayRange = document.getElementById('overlayRange');
 const overlayValue = document.getElementById('overlayValue');
 const borderToggle = document.getElementById('borderToggle');
 const downloadBtn = document.getElementById('downloadBtn');
+const squareToggle = document.getElementById('squareToggle');
+const squareOverlay = document.getElementById('squareOverlay');
 const fontBtns = document.querySelectorAll('.font-container button');
 const colorBtns = document.querySelectorAll('.color-container button');
 const fontSizeMinus = document.getElementById('fontSizeMinus');
@@ -19,6 +21,7 @@ let currentColor = 'black';
 let currentBorder = false;
 let currentOverlay = 0;
 let fontSizeStep = 0; // 1step = 비율 0.01 (≈10px @ 1080p)
+let squareOverlayVisible = false;
 
 canvasWrapper.addEventListener('click', () => fileInput.click());
 
@@ -37,6 +40,7 @@ fileInput.addEventListener('change', (e) => {
     currentImg = img;
     downloadBtn.disabled = false;
     draw();
+    updateSquareOverlay();
   }
 });
 
@@ -87,6 +91,12 @@ function updateFontSizeDisplay() {
   else if (fontSizeStep > 0) fontSizeDisplay.textContent = `+${fontSizeStep}`;
   else fontSizeDisplay.textContent = `${fontSizeStep}`;
 }
+
+squareToggle.addEventListener('click', (e) => {
+  squareOverlayVisible = !squareOverlayVisible;
+  e.target.classList.toggle('active', squareOverlayVisible);
+  updateSquareOverlay();
+});
 
 borderToggle.addEventListener('click', (e) => {
   currentBorder = !currentBorder
@@ -146,6 +156,27 @@ function getWrappedLines(ctx, text, maxWidth) {
 
   return lines
 }
+
+function updateSquareOverlay() {
+  if (!squareOverlayVisible || !currentImg) {
+    squareOverlay.classList.remove('visible');
+    return;
+  }
+  const canvasRect = canvas.getBoundingClientRect();
+  const wrapperRect = canvasWrapper.getBoundingClientRect();
+  const displayW = canvasRect.width;
+  const displayH = canvasRect.height;
+  const squareSize = Math.min(displayW, displayH);
+  const offsetX = canvasRect.left - wrapperRect.left + (displayW - squareSize) / 2;
+  const offsetY = canvasRect.top - wrapperRect.top + (displayH - squareSize) / 2;
+  squareOverlay.style.width = squareSize + 'px';
+  squareOverlay.style.height = squareSize + 'px';
+  squareOverlay.style.left = offsetX + 'px';
+  squareOverlay.style.top = offsetY + 'px';
+  squareOverlay.classList.add('visible');
+}
+
+window.addEventListener('resize', updateSquareOverlay);
 
 function draw() {
   if (!currentImg) return;

@@ -176,6 +176,32 @@ body {
   display: flex;
 }
 
+.square-toggle-btn {
+  font-size: 12px;
+  height: 28px;
+  padding: 0 12px;
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+  background: transparent;
+}
+
+.square-toggle-btn.active {
+  color: var(--color-text);
+  border-color: var(--color-text);
+}
+
+.square-overlay {
+  position: absolute;
+  pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
+  display: none;
+  z-index: 1;
+}
+
+.square-overlay.visible {
+  display: block;
+}
+
 .canvas-wrapper:hover .image-placeholder {
   border-color: var(--color-border-hover);
 }
@@ -313,7 +339,8 @@ button:disabled {
 }
 
 .text-row .text-input {
-  width: 100%;
+  flex: 1;
+  width: 0;
 }
 
 .font-size-control {
