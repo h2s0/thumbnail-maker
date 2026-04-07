@@ -109,7 +109,7 @@ downloadBtn.disabled = true
 
 downloadBtn.addEventListener('click', () => {
   const link = document.createElement('a')
-  link.download = 'thumbnail.jpg'
+  link.download = `${textInput.value}_썸네일.jpg`
   link.href = canvas.toDataURL('image/jpeg', 0.95)
   link.click()
 })
