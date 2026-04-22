@@ -321,7 +321,7 @@ button:disabled {
 /* ─── 색상 버튼 ─── */
 
 .color-container button {
-  width: 80px;
+  flex: 1;
 }
 
 /* ─── plain 버튼 ─── */
@@ -386,6 +386,69 @@ button:disabled {
 
 #downloadBtn:active:not(:disabled) {
   background-color: #000;
+}
+
+/* ─── 색상+테두리+위치 묶음 ─── */
+
+.color-pos-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: var(--mobile-width);
+}
+
+.color-border-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.color-border-group .color-container {
+  width: 100%;
+}
+
+.color-border-group .plain-button {
+  width: 100%;
+}
+
+/* ─── 글자 위치 ─── */
+
+.pos-grid-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 32px);
+  gap: 3px;
+}
+
+.pos-grid-picker button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  position: relative;
+  border-radius: 4px;
+}
+
+.pos-grid-picker button::after {
+  content: '';
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: var(--color-border);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.15s;
+}
+
+.pos-grid-picker button.active {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.pos-grid-picker button.active::after {
+  background: white;
 }
 
 /* ─── 슬라이더 ─── */

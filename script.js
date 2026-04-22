@@ -22,6 +22,8 @@ let currentBorder = false;
 let currentOverlay = 0;
 let fontSizeStep = 0; // 1step = 비율 0.01 (≈10px @ 1080p)
 let squareOverlayVisible = false;
+let currentTextPosV = 'center';
+let currentTextPosH = 'center';
 
 canvasWrapper.addEventListener('click', () => fileInput.click());
 
@@ -96,6 +98,17 @@ squareToggle.addEventListener('click', (e) => {
   squareOverlayVisible = !squareOverlayVisible;
   e.target.classList.toggle('active', squareOverlayVisible);
   updateSquareOverlay();
+});
+
+const posGridBtns = document.querySelectorAll('.pos-grid-picker button');
+posGridBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    posGridBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTextPosV = btn.dataset.posv;
+    currentTextPosH = btn.dataset.posh;
+    draw();
+  });
 });
 
 borderToggle.addEventListener('click', (e) => {
@@ -196,14 +209,27 @@ function draw() {
     const fontSize = Math.floor(shortSide * (0.13 + fontSizeStep * 0.01))
     const lineHeight = fontSize
 
-    ctx.font = `bold ${fontSize}px ${currentFont}`;
-    ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     const maxWidth = shortSide * 0.8
+    ctx.font = `bold ${fontSize}px ${currentFont}`;
     const lines = getWrappedLines(ctx, text, maxWidth)
-
     const totalHeight = lines.length * lineHeight
-    const startY = (canvas.height - totalHeight) / 2
+
+    // 정사각형 영역 기준으로 위치 계산
+    const sqSize = shortSide
+    const sqLeft = (canvas.width - sqSize) / 2
+    const sqTop = (canvas.height - sqSize) / 2
+    const pad = sqSize * 0.1
+
+    let startY;
+    if (currentTextPosV === 'top') startY = sqTop + pad;
+    else if (currentTextPosV === 'bottom') startY = sqTop + sqSize - totalHeight - pad;
+    else startY = sqTop + (sqSize - totalHeight) / 2;
+
+    let drawX;
+    if (currentTextPosH === 'left') { drawX = sqLeft + pad; ctx.textAlign = 'left'; }
+    else if (currentTextPosH === 'right') { drawX = sqLeft + sqSize - pad; ctx.textAlign = 'right'; }
+    else { drawX = sqLeft + sqSize / 2; ctx.textAlign = 'center'; }
 
     lines.forEach((line, i) => {
       const y = startY + i * lineHeight + lineHeight / 2
@@ -211,11 +237,11 @@ function draw() {
       if (currentBorder) {
         ctx.strokeStyle = currentColor === 'white' ? 'black' : 'white'
         ctx.lineWidth = 4
-        ctx.strokeText(line, canvas.width / 2, y)
+        ctx.strokeText(line, drawX, y)
       }
 
       ctx.fillStyle = currentColor
-      ctx.fillText(line, canvas.width / 2, y)
+      ctx.fillText(line, drawX, y)
     })
   }
 }

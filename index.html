@@ -61,13 +61,25 @@
         <button type="button" data-font="IsYun">이서윤</button>
       </div>
 
-      <div class="button-container color-container">
-        <button data-color="white" type="button">흰색</button>
-        <button data-color="black" type="button">검정색</button>
-      </div>
-
-      <div class="button-container">
-        <button id="borderToggle" type="button" class="plain-button">테두리 OFF</button>
+      <div class="color-pos-row">
+        <div class="color-border-group">
+          <div class="button-container color-container">
+            <button data-color="white" type="button">흰색</button>
+            <button data-color="black" type="button">검정색</button>
+          </div>
+          <button id="borderToggle" type="button" class="plain-button">테두리 OFF</button>
+        </div>
+        <div class="pos-grid-picker">
+          <button data-posv="top"    data-posh="left"   type="button"></button>
+          <button data-posv="top"    data-posh="center" type="button"></button>
+          <button data-posv="top"    data-posh="right"  type="button"></button>
+          <button data-posv="center" data-posh="left"   type="button"></button>
+          <button data-posv="center" data-posh="center" type="button" class="active"></button>
+          <button data-posv="center" data-posh="right"  type="button"></button>
+          <button data-posv="bottom" data-posh="left"   type="button"></button>
+          <button data-posv="bottom" data-posh="center" type="button"></button>
+          <button data-posv="bottom" data-posh="right"  type="button"></button>
+        </div>
       </div>
 
       <div class="overlay-container">
