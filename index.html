@@ -5,30 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>블로그 썸네일 만들기 | 무료 썸네일 메이커</title>
-  <meta name="description" content="사진에 텍스트를 올려 블로그 썸네일을 무료로 만들어보세요. 다양한 폰트와 색상을 지원합니다.">
+  <meta name="description" content="이미지에 텍스트를 올려 블로그 썸네일을 무료로 만들어보세요. 다양한 폰트, 색상, 1:1 미리보기, JPG 다운로드를 지원합니다.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#fafafa">
 
   <!-- OG (카카오, 페이스북) -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://thumbnail.heeso.site/">
+  <meta property="og:site_name" content="블로그 썸네일 메이커">
   <meta property="og:title" content="블로그 썸네일 만들기">
-  <meta property="og:description" content="사진에 텍스트를 올려 블로그 썸네일을 무료로 만들어보세요.">
+  <meta property="og:description" content="이미지에 텍스트를 올려 블로그 썸네일을 무료로 만들어보세요.">
   <meta property="og:image" content="https://thumbnail.heeso.site/og.png">
+  <meta property="og:image:alt" content="블로그 썸네일 메이커 미리보기">
 
   <!-- 트위터 카드 -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="블로그 썸네일 만들기">
-  <meta name="twitter:description" content="사진에 텍스트를 올려 블로그 썸네일을 무료로 만들어보세요.">
+  <meta name="twitter:description" content="이미지에 텍스트를 올려 블로그 썸네일을 무료로 만들어보세요.">
   <meta name="twitter:image" content="https://thumbnail.heeso.site/og.png">
+  <meta name="twitter:image:alt" content="블로그 썸네일 메이커 미리보기">
 
   <link rel="canonical" href="https://thumbnail.heeso.site/">
   <link rel="stylesheet" href="style.css">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "블로그 썸네일 메이커",
+      "url": "https://thumbnail.heeso.site/",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "Web",
+      "description": "이미지에 텍스트를 올려 블로그 썸네일을 만들고 JPG로 다운로드할 수 있는 무료 웹 앱입니다.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+  </script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6143261166799767"
      crossorigin="anonymous"></script>
 </head>
 <body>
   <div class="container">
-    <h1 class="title">블로그 썸네일을 만들어보아요</h1>
-    <section class="section-container">
+    <h1 class="title">블로그 썸네일 만들기</h1>
+    <section class="section-container" aria-labelledby="image-section-title">
+      <h2 id="image-section-title" class="sr-only">이미지 업로드 및 미리보기</h2>
 
       <div class="canvas-wrapper">
         <canvas id="canvas"></canvas>
@@ -45,6 +67,7 @@
 
       <div class="divider"></div>
 
+      <h2 class="sr-only">썸네일 텍스트 입력</h2>
       <div class="text-row">
         <textarea id="textInput" placeholder="텍스트를 입력해주세요." class="text-input"></textarea>
         <div class="font-size-control">
@@ -54,6 +77,7 @@
         </div>
       </div>
 
+      <h2 class="sr-only">폰트와 색상 선택</h2>
       <div class="button-container font-container">
         <button type="button" data-font="GmarketSans">지마켓Sans</button>
         <button type="button" data-font="KkuBulLim">꾸불림</button>
@@ -70,18 +94,19 @@
           <button id="borderToggle" type="button" class="plain-button">테두리 OFF</button>
         </div>
         <div class="pos-grid-picker">
-          <button data-posv="top"    data-posh="left"   type="button"></button>
-          <button data-posv="top"    data-posh="center" type="button"></button>
-          <button data-posv="top"    data-posh="right"  type="button"></button>
-          <button data-posv="center" data-posh="left"   type="button"></button>
-          <button data-posv="center" data-posh="center" type="button" class="active"></button>
-          <button data-posv="center" data-posh="right"  type="button"></button>
-          <button data-posv="bottom" data-posh="left"   type="button"></button>
-          <button data-posv="bottom" data-posh="center" type="button"></button>
-          <button data-posv="bottom" data-posh="right"  type="button"></button>
+          <button data-posv="top"    data-posh="left"   type="button" aria-label="텍스트 왼쪽 위"></button>
+          <button data-posv="top"    data-posh="center" type="button" aria-label="텍스트 가운데 위"></button>
+          <button data-posv="top"    data-posh="right"  type="button" aria-label="텍스트 오른쪽 위"></button>
+          <button data-posv="center" data-posh="left"   type="button" aria-label="텍스트 왼쪽 가운데"></button>
+          <button data-posv="center" data-posh="center" type="button" class="active" aria-label="텍스트 정가운데"></button>
+          <button data-posv="center" data-posh="right"  type="button" aria-label="텍스트 오른쪽 가운데"></button>
+          <button data-posv="bottom" data-posh="left"   type="button" aria-label="텍스트 왼쪽 아래"></button>
+          <button data-posv="bottom" data-posh="center" type="button" aria-label="텍스트 가운데 아래"></button>
+          <button data-posv="bottom" data-posh="right"  type="button" aria-label="텍스트 오른쪽 아래"></button>
         </div>
       </div>
 
+      <h2 class="sr-only">이미지 어둡기 조절</h2>
       <div class="overlay-container">
         <label class="overlay-label" for="overlayRange">어둡기</label>
         <input id="overlayRange" type="range" min="0" max="100" value="0">
@@ -90,6 +115,7 @@
 
       <div class="divider"></div>
 
+      <h2 class="sr-only">썸네일 JPG 다운로드</h2>
       <button id="downloadBtn" type="button">썸네일 만들기</button>
 
     </section>
