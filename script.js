@@ -25,6 +25,12 @@ let squareOverlayVisible = false;
 let currentTextPosV = 'center';
 let currentTextPosH = 'center';
 
+function trackEvent(name, data = {}) {
+  if (typeof window.va === 'function') {
+    window.va('event', { name, data });
+  }
+}
+
 canvasWrapper.addEventListener('click', () => fileInput.click());
 
 fileInput.addEventListener('change', (e) => {
@@ -43,6 +49,11 @@ fileInput.addEventListener('change', (e) => {
     downloadBtn.disabled = false;
     draw();
     updateSquareOverlay();
+    trackEvent('Image Uploaded', {
+      fileType: file.type || 'unknown',
+      imageWidth: img.width,
+      imageHeight: img.height,
+    });
   }
 });
 
@@ -60,6 +71,7 @@ fontBtns.forEach(btn => {
     btn.classList.add('active')
     currentFont = btn.dataset.font
     draw()
+    trackEvent('Font Changed', { font: currentFont });
   })
 })
 
@@ -69,6 +81,7 @@ colorBtns.forEach(btn => {
     btn.classList.add('active')
     currentColor = btn.dataset.color
     draw()
+    trackEvent('Text Color Changed', { color: currentColor });
   })
 })
 
@@ -77,6 +90,7 @@ fontSizeMinus.addEventListener('click', () => {
     fontSizeStep--;
     updateFontSizeDisplay();
     draw();
+    trackEvent('Font Size Changed', { step: fontSizeStep });
   }
 });
 
@@ -85,6 +99,7 @@ fontSizePlus.addEventListener('click', () => {
     fontSizeStep++;
     updateFontSizeDisplay();
     draw();
+    trackEvent('Font Size Changed', { step: fontSizeStep });
   }
 });
 
@@ -98,6 +113,7 @@ squareToggle.addEventListener('click', (e) => {
   squareOverlayVisible = !squareOverlayVisible;
   e.target.classList.toggle('active', squareOverlayVisible);
   updateSquareOverlay();
+  trackEvent('Square Preview Toggled', { enabled: squareOverlayVisible });
 });
 
 const posGridBtns = document.querySelectorAll('.pos-grid-picker button');
@@ -108,6 +124,10 @@ posGridBtns.forEach(btn => {
     currentTextPosV = btn.dataset.posv;
     currentTextPosH = btn.dataset.posh;
     draw();
+    trackEvent('Text Position Changed', {
+      vertical: currentTextPosV,
+      horizontal: currentTextPosH,
+    });
   });
 });
 
@@ -116,6 +136,7 @@ borderToggle.addEventListener('click', (e) => {
   e.target.textContent = currentBorder ? '테두리 ON' : '테두리 OFF'
   e.target.classList.toggle('active', currentBorder)
   draw()
+  trackEvent('Text Border Toggled', { enabled: currentBorder });
 })
 
 downloadBtn.disabled = true
@@ -125,6 +146,15 @@ downloadBtn.addEventListener('click', () => {
   link.download = `${textInput.value}_썸네일.jpg`
   link.href = canvas.toDataURL('image/jpeg', 0.95)
   link.click()
+  trackEvent('Thumbnail Downloaded', {
+    hasText: Boolean(textInput.value.trim()),
+    font: currentFont,
+    color: currentColor,
+    border: currentBorder,
+    overlay: Number(currentOverlay),
+    fontSizeStep,
+    textPosition: `${currentTextPosV}-${currentTextPosH}`,
+  });
 })
 
 function getWrappedLines(ctx, text, maxWidth) {
