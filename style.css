@@ -118,6 +118,15 @@ body {
   justify-content: center;
 }
 
+.canvas-wrapper.crop-active.has-image {
+  cursor: grab;
+  touch-action: none;
+}
+
+.canvas-wrapper.crop-active.dragging {
+  cursor: grabbing;
+}
+
 #canvas {
   max-width: 100%;
   max-height: 60vh;
@@ -188,13 +197,32 @@ body {
   display: flex;
 }
 
+.image-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: var(--mobile-width);
+}
+
+.image-action-btn,
 .square-toggle-btn {
   font-size: 12px;
   height: 28px;
-  padding: 0 12px;
   color: var(--color-text-muted);
   border-color: var(--color-border);
   background: transparent;
+}
+
+.image-action-btn {
+  width: 36px;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.square-toggle-btn {
+  padding: 0 12px;
 }
 
 .square-toggle-btn.active {
@@ -514,6 +542,10 @@ button:disabled {
   }
 
   .overlay-container {
+    width: 100%;
+  }
+
+  .image-action-row {
     width: 100%;
   }
 

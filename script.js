@@ -8,7 +8,10 @@ const overlayValue = document.getElementById('overlayValue');
 const borderToggle = document.getElementById('borderToggle');
 const downloadBtn = document.getElementById('downloadBtn');
 const squareToggle = document.getElementById('squareToggle');
+const cropToggle = document.getElementById('cropToggle');
 const squareOverlay = document.getElementById('squareOverlay');
+const rotateLeftBtn = document.getElementById('rotateLeftBtn');
+const rotateRightBtn = document.getElementById('rotateRightBtn');
 const fontBtns = document.querySelectorAll('.font-container button');
 const colorBtns = document.querySelectorAll('.color-container button');
 const fontSizeMinus = document.getElementById('fontSizeMinus');
@@ -22,8 +25,17 @@ let currentBorder = false;
 let currentOverlay = 0;
 let fontSizeStep = 0; // 1step = 비율 0.01 (≈10px @ 1080p)
 let squareOverlayVisible = false;
+let cropMode = false;
 let currentTextPosV = 'center';
 let currentTextPosH = 'center';
+let currentRotation = 0;
+let imageOffsetX = 0;
+let imageOffsetY = 0;
+let isDraggingImage = false;
+let dragStartPoint = null;
+let dragStartOffset = null;
+let hasDraggedImage = false;
+let suppressFilePicker = false;
 
 function trackEvent(name, data = {}) {
   if (typeof window.va === 'function') {
@@ -31,7 +43,16 @@ function trackEvent(name, data = {}) {
   }
 }
 
-canvasWrapper.addEventListener('click', () => fileInput.click());
+canvasWrapper.addEventListener('click', () => {
+  if (suppressFilePicker) {
+    suppressFilePicker = false;
+    return;
+  }
+
+  if (cropMode && currentImg) return;
+
+  fileInput.click();
+});
 
 fileInput.addEventListener('change', (e) => {
   const file = e.target.files[0];
@@ -40,13 +61,17 @@ fileInput.addEventListener('change', (e) => {
   img.src = URL.createObjectURL(file);
 
   img.onload = () => {
-    canvas.width = img.width;
-    canvas.height = img.height;
+    currentRotation = 0;
+    currentImg = img;
+    resetImageOffset();
+    updateCanvasSize();
     canvas.style.display = 'block';
     imagePlaceholder.style.display = 'none';
     canvasWrapper.classList.add('has-image');
-    currentImg = img;
     downloadBtn.disabled = false;
+    cropToggle.disabled = false;
+    rotateLeftBtn.disabled = false;
+    rotateRightBtn.disabled = false;
     draw();
     updateSquareOverlay();
     trackEvent('Image Uploaded', {
@@ -116,6 +141,83 @@ squareToggle.addEventListener('click', (e) => {
   trackEvent('Square Preview Toggled', { enabled: squareOverlayVisible });
 });
 
+cropToggle.addEventListener('click', (e) => {
+  cropMode = !cropMode;
+  e.target.classList.toggle('active', cropMode);
+  canvasWrapper.classList.toggle('crop-active', cropMode);
+  constrainImageOffset();
+  draw();
+  updateSquareOverlay();
+  trackEvent('Square Crop Toggled', { enabled: cropMode });
+});
+
+function rotateImage(direction) {
+  if (!currentImg) return;
+
+  currentRotation = (currentRotation + direction + 360) % 360;
+  resetImageOffset();
+  draw();
+  updateSquareOverlay();
+  trackEvent('Image Rotated', { rotation: currentRotation });
+}
+
+rotateLeftBtn.addEventListener('click', () => rotateImage(-90));
+rotateRightBtn.addEventListener('click', () => rotateImage(90));
+
+canvasWrapper.addEventListener('pointerdown', (e) => {
+  if (!currentImg || !cropMode) return;
+
+  isDraggingImage = true;
+  dragStartPoint = getCanvasPoint(e);
+  dragStartOffset = { x: imageOffsetX, y: imageOffsetY };
+  hasDraggedImage = false;
+  canvasWrapper.classList.add('dragging');
+  canvasWrapper.setPointerCapture(e.pointerId);
+  e.preventDefault();
+});
+
+canvasWrapper.addEventListener('pointermove', (e) => {
+  if (!isDraggingImage || !dragStartPoint || !dragStartOffset) return;
+
+  const point = getCanvasPoint(e);
+  const nextOffsetX = dragStartOffset.x + point.x - dragStartPoint.x;
+  const nextOffsetY = dragStartOffset.y + point.y - dragStartPoint.y;
+
+  setImageOffset(nextOffsetX, nextOffsetY);
+
+  if (Math.abs(point.x - dragStartPoint.x) > 2 || Math.abs(point.y - dragStartPoint.y) > 2) {
+    hasDraggedImage = true;
+    suppressFilePicker = true;
+  }
+
+  e.preventDefault();
+});
+
+function stopImageDrag(e) {
+  if (!isDraggingImage) return;
+
+  isDraggingImage = false;
+  dragStartPoint = null;
+  dragStartOffset = null;
+  canvasWrapper.classList.remove('dragging');
+
+  if (canvasWrapper.hasPointerCapture(e.pointerId)) {
+    canvasWrapper.releasePointerCapture(e.pointerId);
+  }
+
+  if (hasDraggedImage) {
+    trackEvent('Crop Image Repositioned', {
+      offsetX: Math.round(imageOffsetX),
+      offsetY: Math.round(imageOffsetY),
+    });
+  } else {
+    fileInput.click();
+  }
+}
+
+canvasWrapper.addEventListener('pointerup', stopImageDrag);
+canvasWrapper.addEventListener('pointercancel', stopImageDrag);
+
 const posGridBtns = document.querySelectorAll('.pos-grid-picker button');
 posGridBtns.forEach(btn => {
   btn.addEventListener('click', () => {
@@ -140,12 +242,19 @@ borderToggle.addEventListener('click', (e) => {
 })
 
 downloadBtn.disabled = true
+cropToggle.disabled = true
+rotateLeftBtn.disabled = true
+rotateRightBtn.disabled = true
 
-downloadBtn.addEventListener('click', () => {
-  const link = document.createElement('a')
-  link.download = `${textInput.value}_썸네일.jpg`
-  link.href = canvas.toDataURL('image/jpeg', 0.95)
-  link.click()
+downloadBtn.addEventListener('click', async () => {
+  const fileName = `${textInput.value || 'thumbnail'}_썸네일.jpg`;
+  const exportCanvas = getExportCanvas();
+  const blob = await new Promise(resolve => exportCanvas.toBlob(resolve, 'image/jpeg', 0.95));
+
+  if (!blob) return;
+
+  saveBlob(fileName, blob);
+
   trackEvent('Thumbnail Downloaded', {
     hasText: Boolean(textInput.value.trim()),
     font: currentFont,
@@ -154,8 +263,20 @@ downloadBtn.addEventListener('click', () => {
     overlay: Number(currentOverlay),
     fontSizeStep,
     textPosition: `${currentTextPosV}-${currentTextPosH}`,
+    squarePreview: squareOverlayVisible,
+    squareCrop: cropMode,
+    imageOffsetX: Math.round(imageOffsetX),
+    imageOffsetY: Math.round(imageOffsetY),
   });
 })
+
+function saveBlob(fileName, blob) {
+  const link = document.createElement('a')
+  link.download = fileName
+  link.href = URL.createObjectURL(blob)
+  link.click()
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000)
+}
 
 function getWrappedLines(ctx, text, maxWidth) {
   const lines = []
@@ -201,7 +322,7 @@ function getWrappedLines(ctx, text, maxWidth) {
 }
 
 function updateSquareOverlay() {
-  if (!squareOverlayVisible || !currentImg) {
+  if ((!squareOverlayVisible && !cropMode) || !currentImg) {
     squareOverlay.classList.remove('visible');
     return;
   }
@@ -221,12 +342,88 @@ function updateSquareOverlay() {
 
 window.addEventListener('resize', updateSquareOverlay);
 
+function resetImageOffset() {
+  imageOffsetX = 0;
+  imageOffsetY = 0;
+}
+
+function getCanvasPoint(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+
+  return {
+    x: (e.clientX - rect.left) * scaleX,
+    y: (e.clientY - rect.top) * scaleY,
+  };
+}
+
+function getMaxImageOffset() {
+  const squareSize = Math.min(canvas.width, canvas.height);
+
+  return {
+    x: (canvas.width - squareSize) / 2,
+    y: (canvas.height - squareSize) / 2,
+  };
+}
+
+function setImageOffset(nextOffsetX, nextOffsetY) {
+  const maxOffset = getMaxImageOffset();
+  imageOffsetX = Math.max(-maxOffset.x, Math.min(maxOffset.x, nextOffsetX));
+  imageOffsetY = Math.max(-maxOffset.y, Math.min(maxOffset.y, nextOffsetY));
+  draw();
+  updateSquareOverlay();
+}
+
+function constrainImageOffset() {
+  setImageOffset(imageOffsetX, imageOffsetY);
+}
+
+function getExportCanvas() {
+  if (!cropMode) return canvas;
+
+  const squareSize = Math.min(canvas.width, canvas.height);
+  const cropCanvas = document.createElement('canvas');
+  const cropCtx = cropCanvas.getContext('2d');
+  const sourceX = (canvas.width - squareSize) / 2;
+  const sourceY = (canvas.height - squareSize) / 2;
+
+  cropCanvas.width = squareSize;
+  cropCanvas.height = squareSize;
+  cropCtx.drawImage(canvas, sourceX, sourceY, squareSize, squareSize, 0, 0, squareSize, squareSize);
+
+  return cropCanvas;
+}
+
+function updateCanvasSize() {
+  if (!currentImg) return;
+
+  const isSideways = currentRotation % 180 !== 0;
+  const nextWidth = isSideways ? currentImg.height : currentImg.width;
+  const nextHeight = isSideways ? currentImg.width : currentImg.height;
+
+  if (canvas.width !== nextWidth) canvas.width = nextWidth;
+  if (canvas.height !== nextHeight) canvas.height = nextHeight;
+}
+
+function drawRotatedImage(ctx) {
+  const offsetX = cropMode ? imageOffsetX : 0;
+  const offsetY = cropMode ? imageOffsetY : 0;
+
+  ctx.save();
+  ctx.translate(canvas.width / 2 + offsetX, canvas.height / 2 + offsetY);
+  ctx.rotate(currentRotation * Math.PI / 180);
+  ctx.drawImage(currentImg, -currentImg.width / 2, -currentImg.height / 2);
+  ctx.restore();
+}
+
 function draw() {
   if (!currentImg) return;
 
+  updateCanvasSize();
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(currentImg, 0, 0, canvas.width, canvas.height);
+  drawRotatedImage(ctx);
 
   // 오버레이
   ctx.fillStyle = `rgba(0, 0, 0, ${currentOverlay / 100})`
